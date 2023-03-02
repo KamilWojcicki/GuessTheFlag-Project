@@ -32,7 +32,7 @@ struct ContentView: View {
                     VStack{
                         Text("Tap the flag of")
                             .foregroundStyle(.secondary)
-                            .font(.subheadline.weight(.heavy))
+                            .font(.callout.weight(.heavy))
                         Text(countries[correctAnswer])
                             .font(.largeTitle.weight(.semibold))
                             
@@ -70,12 +70,13 @@ struct ContentView: View {
             }else{
                 Button("Continue", action: askQuestion)
             }
-            
         }message: {
             if wrong == 3{
                 Text("Your final score is \(score)")
             }else{
-                Text("Your score is \(score)")
+                if wrong < 3{
+                    Text("Your score is \(score) \n You have \(3 - wrong) try left")
+                }
             }
         }
     }
