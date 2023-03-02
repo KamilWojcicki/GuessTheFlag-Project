@@ -8,100 +8,81 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var shownigAlert  = false
+    @State private var showingScores = false
+    @State private var scoreTitle = ""
+    @State private var score = 0
+    @State private var wrong = 0
+    @State private var countries = ["Estonia", "France", "Germany", "Ireland", "Italy", "Nigeria", "Poland", "Russia", "Spain", "UK", "US"].shuffled()
+    @State private var correctAnswer = Int.random(in: 0...2)
     
     var body: some View {
-        Button("show alert!"){
-            shownigAlert = true
+        ZStack{
+            RadialGradient(stops: [
+                .init(color: Color(red: 0.1 ,green: 0.2, blue: 0.45), location: 0.3),
+                .init(color: Color(red: 0.76, green: 0.15, blue: 0.26), location: 0.3)
+            ], center: .top, startRadius: 200, endRadius: 700)
+                .ignoresSafeArea()
+            
+            VStack{
+                Spacer()
+                Text("Guess the country")
+                    .font(.largeTitle.bold())
+                    .foregroundColor(.white)
+                VStack(spacing: 15){
+                    VStack{
+                        Text("Tap the flag of")
+                            .foregroundStyle(.secondary)
+                            .font(.subheadline.weight(.heavy))
+                        Text(countries[correctAnswer])
+                            .font(.largeTitle.weight(.semibold))
+                            
+                    }
+                    
+                    ForEach(0..<3){ number in
+                        Button{
+                            flagTapped(number)
+                        } label: {
+                            Image(countries[number])
+                                .renderingMode(.original)
+                                .clipShape(Capsule())
+                                .shadow(radius: 10)
+                        }
+                    }
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+                .background(.thinMaterial)
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                
+                Spacer()
+                Spacer()
+                
+                Text("Score: \(score)")
+                    .foregroundColor(.white)
+                    .font(.title.bold())
+                Spacer()
+            }
+            .padding()
         }
-        .alert("important message", isPresented: $shownigAlert){
-            Button("Delete", role: .destructive){}
-            Button("Cancel", role: .cancel){}
-            //wiadomość która wyświetli się pod głównym tekstem po kliknięciu przycisku.
+        .alert(scoreTitle, isPresented: $showingScores){
+            Button("Continue", action: askQuestion)
         }message: {
-            Text("please read this")
+            Text("Your score is \(score)")
         }
-//        VStack {
-//            HStack {
-//                Text("1")
-//                Text("2")
-//                Text("3")
-//            }
-//            HStack {
-//                Text("4")
-//                Text("5")
-//                Text("6")
-//            }
-//            HStack {
-//                Text("7")
-//                Text("8")
-//                Text("9")
-//            }
-//        }
-        
-        //ZStack {
-//        Button{
-//            print("edit the button")
-//        }label: {
-//            Label("Edit", systemImage: "pencil")
-//        }
-//        VStack{
-//            Button("button1"){}
-//                .buttonStyle(.bordered)
-//                .tint(.blue)
-//            Button("button2", role: .destructive){}
-//                .buttonStyle(.bordered)
-//            Button("button3"){}
-//
-//            Button{
-//                print("button was tapped!")
-//            }label: {
-//                Text("tap me!")
-//                    .padding()
-//                    .foregroundColor(.white)
-//                    .background(.red)
-//            }
-//            Image(systemName: "pencil")
-//                .padding()
-//            Button{
-//                print("edit the button")
-//            }label: {
-//                Label("Edit the button", systemImage: "pencil")
-//            }
-            //jeśli chcemy aby nasz obrazek miał kolory oryginalne a nie zmienione automatycznie przez swifta to stosujemy renderingMode
-            //.renderingMode(.original)
-       // }
-        
-           // LinearGradient(colors: [.white, .black], startPoint: .top, endPoint: .bottom)
-//        LinearGradient(gradient: Gradient(stops: [
-//            .init(color: .white, location: 0.45),
-//            .init(color: .blue, location: 0.55)
-//        ]), startPoint: .top, endPoint: .bottom)
-        
-//        RadialGradient(gradient: Gradient(colors: [.yellow, .blue]), center: .topLeading, startRadius: 50, endRadius: 300)
-        
-//        AngularGradient(gradient: Gradient(colors: [.red, .yellow, .green, .blue, .purple, .red]), center: .center)
-//        AngularGradient(gradient: Gradient(stops: [
-//            .init(color: .red, location: 0.23),
-//            .init(color: .yellow, location: 0.12),
-//            .init(color: .blue, location: 0.56)
-//        ]), center: .center, startAngle: .degrees(8), endAngle: .degrees(100.6))
-//            VStack(spacing: 0) {
-//                Color.red
-//                Color.blue
-//            }
-            //Color(red:1, green: 0.789, blue: 1)
-//            Color.green
-//            Color.secondary//Color.red
-                //.frame(minWidth: 200, maxWidth: .infinity, maxHeight: 200)//.frame(width: 100, height: 100)
-//            Text("test content")
-//
-//                .foregroundStyle(.secondary)
-//                .padding(50)
-//                .background(.ultraThinMaterial)
-       // }
-        //.background(.red)
-       // .ignoresSafeArea()
+    }
+    func flagTapped(_ number: Int){
+        if number == correctAnswer{
+            scoreTitle = "Correct"
+            score += 1
+        }else{
+            scoreTitle = "Wrong!"
+            //wrong += 1
+        }
+        showingScores = true
+    }
+    func askQuestion(){
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
     }
 }
 
