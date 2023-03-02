@@ -65,9 +65,18 @@ struct ContentView: View {
             .padding()
         }
         .alert(scoreTitle, isPresented: $showingScores){
-            Button("Continue", action: askQuestion)
+            if wrong == 3{
+                Button("Reset", action: resetScore)
+            }else{
+                Button("Continue", action: askQuestion)
+            }
+            
         }message: {
-            Text("Your score is \(score)")
+            if wrong == 3{
+                Text("Your final score is \(score)")
+            }else{
+                Text("Your score is \(score)")
+            }
         }
     }
     func flagTapped(_ number: Int){
@@ -76,13 +85,18 @@ struct ContentView: View {
             score += 1
         }else{
             scoreTitle = "Wrong!"
-            //wrong += 1
+            wrong += 1
         }
         showingScores = true
     }
     func askQuestion(){
         countries.shuffle()
         correctAnswer = Int.random(in: 0...2)
+    }
+    func resetScore(){
+        countries.shuffle()
+        correctAnswer = Int.random(in: 0...2)
+        score = 0
     }
 }
 
